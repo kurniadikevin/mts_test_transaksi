@@ -2,6 +2,9 @@ const User= require('../model/m_user');
 const bcrypt =require('bcryptjs');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 
 
 // GET all user list
@@ -16,9 +19,8 @@ exports.get_user_list = (req, res,next) => {
   };
 
 
-//SIGN UP buat user untuk berfungsi sebagai admin 
+//SIGN UP membuat user yang berfungsi sebagai admin 
 exports.create_new_user=(async (req,res,next)=>{
-
     const usernameExist = await User.find({ username : {$eq :req.body.username}});
         if(usernameExist.length > 0){
           return res.status(400).json({ error: 'Username already used' });
@@ -80,9 +82,12 @@ passport.use(
   });
   
   passport.deserializeUser(function(id, done) {
-    User.findById({_id: id}, function(err, user) {
+    User.findById({_id: id}).then( (err, user)=> {
       done(err, user);
-    });
+    })
+    .catch((err)=>{
+      next(err)
+    })
   });
 
 // sign in
@@ -93,10 +98,55 @@ exports.user_sign_in=(req, res, next) => {
       else {
         req.logIn(user, (err) => {
           if (err) throw err;
-          /* const info= req.user;
-          res.send({info,...res.locals.token}); */
-          res.send(req.user)
+          let {password, ...foundUser} = (req.user).toJSON();
+          res.send({
+            status : 'Succeed',
+            message : 'User login berhasil',
+            data : foundUser,
+            token : res.locals.token
+          })
         });
       }
     })(req, res, next);
   };
+
+// middleware for generating bearer token
+exports.generateTokenMiddleware=(req,res,next)=>{
+  const user ={
+    username : req.body.username,
+    password : req.body.password
+  }
+  jwt.sign({user},process.env.JWT_BEARER_SECRETKEY ,(err,token)=>{
+  res.locals.token= token// store token on res.locals
+  })
+  next()
+}
+
+//Verify Token
+exports.verifyToken =(req,res,next)=>{
+  //Auth header value = > send token into header
+  const bearerHeader = req.headers.authorization;
+  //check if bearer is undefined
+  if(typeof bearerHeader !== 'undefined'){
+      //split the space at the bearer
+      const bearer = bearerHeader.split(' ');
+      //Get token from string
+      const bearerToken = bearer[1];
+      //set the token
+      req.token = bearerToken;
+      
+      //next middleweare
+      jwt.verify(req.token,process.env.JWT_BEARER_SECRETKEY,(err)=>{
+          if(err)
+              res.sendStatus(403);
+          else{
+             console.log('token verified success')
+             next()
+          }
+      })
+
+  }else{
+      //Fobidden
+      res.sendStatus(403);
+  }
+}

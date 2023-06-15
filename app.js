@@ -8,13 +8,14 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const barangRouter = require('./routes/barang');
 const customerRouter= require('./routes/customer');
+const user_controller= require('./controller/user')
 
 const session = require("express-session");
 const passport = require("passport");
 
 const app = express();
 
-//integrate MONGO DB
+//connecting MONGO DB
 const mongoose = require("mongoose");
 const mongoDB = process.env.DATABASE_URI;   
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -36,6 +37,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+//middleware app level for verify bearer token
+app.use('*',user_controller.verifyToken)
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);

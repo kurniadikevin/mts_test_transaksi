@@ -9,7 +9,7 @@ router.get('/all', user_controller.get_user_list)
 router.post('/sign-up',user_controller.create_new_user)
 
 //POST User sign in 
-router.post('/sign-in',user_controller.user_sign_in)
+router.post('/sign-in',user_controller.generateTokenMiddleware,user_controller.user_sign_in)
 
 
 
