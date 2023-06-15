@@ -8,7 +8,10 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const barangRouter = require('./routes/barang');
 const customerRouter= require('./routes/customer');
-const user_controller= require('./controller/user')
+const salesDetailRouter= require('./routes/sales_detail');
+const salesRouter= require('./routes/sales');
+
+const user_controller= require('./controller/user');//for importing verify token
 
 const session = require("express-session");
 const passport = require("passport");
@@ -38,13 +41,15 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUniniti
 app.use(passport.initialize());
 app.use(passport.session());
 
-//middleware app level for verify bearer token
-app.use('*',user_controller.verifyToken)
 
-app.use('/', indexRouter);
 app.use('/user', usersRouter);
+//middleware app level for verify bearer token except user route
+app.use('*',user_controller.verifyToken)
+app.use('/', indexRouter);
 app.use('/barang', barangRouter);
 app.use('/customer',customerRouter);
+app.use('/sales',salesRouter);
+app.use('/sales-detail',salesDetailRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

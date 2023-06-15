@@ -140,7 +140,6 @@ exports.verifyToken =(req,res,next)=>{
           if(err)
               res.sendStatus(403);
           else{
-             console.log('token verified success')
              next()
           }
       })
