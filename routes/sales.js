@@ -12,8 +12,9 @@ router.get('/by-id/:sales_id',sales_controller.get_sales_by_sales_id)
 router.post('/new',sales_controller.post_new_sales);
 
 //PUT update sales data dengan sales detail
-router.put('/update-sum/:sales_id',sales_controller.middleware_calculate_update_sales,
-sales_controller.middleware_calculate_sales_total_bayar ,sales_controller.update_sum_sales_by_id)
+router.put('/update-sum/:sales_id',sales_controller.middleware_calculate_sales_subtotal
+,sales_controller.middleware_calculate_sales_total_bayar
+ ,sales_controller.update_sum_sales_by_id)
 
 //DELETE sales by sales id
 router.delete('/delete-by-id/:sales_id', sales_controller.delete_sales_by_id);

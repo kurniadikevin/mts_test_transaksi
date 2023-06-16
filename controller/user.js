@@ -35,9 +35,10 @@ exports.create_new_user=(async (req,res,next)=>{
           password: hashedPassword,
         })
         user.save().then((data)=>{
+          let {password, ...foundUser} = data.toJSON()
             res.send({
                 message: 'User berhasil ditambahkan',
-                data : data,
+                data : foundUser,
                 status : "Succeed"
             })
         }).catch((err)=>{
@@ -110,6 +111,17 @@ exports.user_sign_in=(req, res, next) => {
     })(req, res, next);
   };
 
+exports.user_sign_out=(req, res, next)=>{
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.send({
+      status: 'Succeed',
+      message : 'User berhasil sign out'
+    })
+  });
+}
+
+
 // middleware for generating bearer token
 exports.generateTokenMiddleware=(req,res,next)=>{
   const user ={
@@ -148,4 +160,17 @@ exports.verifyToken =(req,res,next)=>{
       //Fobidden
       res.sendStatus(403);
   }
+}
+
+exports.delete_user_by_user_id=(req,res,next)=>{
+  User.findByIdAndDelete({_id : req.params.user_id},)
+  .then(()=>{
+   res.send({
+      message : `User dengan _id : ${req.params.user_id} berhasil dihapus`,
+      status : 'Success'
+   });
+  })
+  .catch((err)=>{
+   return next(err)
+  })
 }

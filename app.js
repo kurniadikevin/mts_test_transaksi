@@ -12,7 +12,7 @@ const salesDetailRouter= require('./routes/sales_detail');
 const salesRouter= require('./routes/sales');
 
 const user_controller= require('./controller/user');//for importing verify token
-
+const verify_token= user_controller.verifyToken
 const session = require("express-session");
 const passport = require("passport");
 
@@ -44,13 +44,12 @@ app.use(passport.session());
 
 
 //middleware app level for verify bearer token except user route
-//app.use('*',user_controller.verifyToken)
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
-app.use('/barang', barangRouter);
-app.use('/customer',customerRouter);
-app.use('/sales',salesRouter);
-app.use('/sales-detail',salesDetailRouter);
+app.use('/barang', verify_token,barangRouter);
+app.use('/customer',verify_token,customerRouter);
+app.use('/sales',verify_token,salesRouter);
+app.use('/sales-detail',verify_token, salesDetailRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

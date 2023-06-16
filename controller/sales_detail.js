@@ -43,7 +43,6 @@ exports.middleware_calculate_for_sales_detail=(req,res,next)=>{
 
      // find harga_bandrol
      const harga_barang=data[0].harga;
-     console.log('harga barang ' + harga_barang);
      const diskon_nilai= req.body.diskon_pct * harga_barang;
      res.locals.harga_bandrol = harga_barang;
      res.locals.diskon_nilai= diskon_nilai;
@@ -57,7 +56,6 @@ exports.middleware_calculate_for_sales_detail=(req,res,next)=>{
 
 //POST add new sales_detail
 exports.post_new_sales_detail=(req,res,next)=>{
-
     const item = new SalesDetail({
         sales_id : req.body.sales_id,
         barang_id : req.body.barang_id,
@@ -78,6 +76,31 @@ exports.post_new_sales_detail=(req,res,next)=>{
         return next(err)
     });
     }
+
+// UPDATE sales_detail
+exports.update_sales_det_by_id=(req,res,next)=>{
+    const updateData = {
+        sales_id : req.body.sales_id,
+        barang_id : req.body.barang_id,
+        harga_bandrol : res.locals.harga_bandrol,//generated
+        qty : req.body.qty,
+        diskon_pct : req.body.diskon_pct,
+        diskon_nilai : res.locals.diskon_nilai, //generated
+        total : res.locals.total//generated
+    }
+    SalesDetail.findByIdAndUpdate(req.params.sales_det_id, updateData)
+    .then(()=>{
+     res.send({
+        message : `Sales detail dengan _id : ${req.params.sales_det_id} berhasil diupdate`,
+        newData : updateData,
+        status : 'Success'
+     });
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}
+
 
 //DELETE sales detail by sales_detail_id
 exports.delete_sales_det_by_id=(req,res,next)=>{

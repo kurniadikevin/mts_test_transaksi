@@ -88,10 +88,10 @@ exports.update_sum_sales_by_id=(req,res,next)=>{
         total_bayar : res.locals.total_bayar
     }
     Sales.findByIdAndUpdate(req.params.sales_id, updateData)
-    .then(()=>{
+    .then((data)=>{
      res.send({
         message : `Sales dengan _id : ${req.params.sales_id} berhasil diupdate`,
-        newData : updateData,
+        newData : data,
         status : 'Success'
      });
     })
