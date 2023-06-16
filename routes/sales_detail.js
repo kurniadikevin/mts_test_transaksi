@@ -14,5 +14,7 @@ router.get('/by-sales-id/:sales_id',sales_detail_controller.get_sales_detail_by_
 //POST input sales detail baru
 router.post('/new',sales_detail_controller.middleware_calculate_for_sales_detail, sales_detail_controller.post_new_sales_detail);
 
+//DELETE sales detail by sales detail id
+router.delete('/delete-by-id/:sales_det_id', sales_detail_controller.delete_sales_det_by_id);
 
 module.exports = router;

@@ -42,10 +42,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use('/user', usersRouter);
+
 //middleware app level for verify bearer token except user route
-app.use('*',user_controller.verifyToken)
+//app.use('*',user_controller.verifyToken)
 app.use('/', indexRouter);
+app.use('/user', usersRouter);
 app.use('/barang', barangRouter);
 app.use('/customer',customerRouter);
 app.use('/sales',salesRouter);

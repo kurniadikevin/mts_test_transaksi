@@ -12,19 +12,16 @@ exports.get_all_sales_list = (req, res,next) => {
     })
   };
 
-// Middleware untuk calkulasi data yang diupdate pada sales setiap barang ditambah 
-exports.middleware_calculate_for_sales= (req,res,next)=>{
-    SalesDetail.find({sales_id : req.params.sales_id},)
+//GET sales by sales_id
+exports.get_sales_by_sales_id = (req, res,next) => {
+    Sales.find({_id : req.params.sales_id},)
     .then((data)=>{
      res.send(data);
-     // ambil data untuk subtotal dan total bayar update
-     //last check
     })
     .catch((err)=>{
      return next(err)
     })
-}
-
+  };
 
 //POST add new sales
 exports.post_new_sales=(req,res,next)=>{
@@ -48,3 +45,56 @@ exports.post_new_sales=(req,res,next)=>{
         return next(err)
     });
     }
+
+// Middleware untuk calkulasi data yang diupdate pada sales setiap barang ditambah 
+exports.middleware_calculate_update_sales= (req,res,next)=>{
+    SalesDetail.find({sales_id : req.params.sales_id},)
+    .then((data)=>{
+    // ambil data untuk subtotal
+     const salesTotalArr = data.map((item)=>{
+        return item.total
+     })
+    // calkulasi  total bayar 
+     const sumTotal= salesTotalArr.reduce((total,num)=>{
+        return total + num
+     })
+     res.locals.subtotal= sumTotal
+     next()
+     //res.send({total:sumTotal});
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}
+
+// POST update sales
+exports.update_sum_sales_by_id=(req,res,next)=>{
+    const updateData={
+        subtotal : res.locals.subtotal, //generated,
+    }
+    Sales.findByIdAndUpdate(req.params.sales_id, updateData)
+    .then(()=>{
+     res.send({
+        message : `Sales dengan _id : ${req.params.sales_id} berhasil diupdate`,
+        newData : updateData,
+        status : 'Success'
+     });
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}
+
+//DELETE sales by sales_id
+exports.delete_sales_by_id=(req,res,next)=>{
+    Sales.findByIdAndDelete({_id : req.params.sales_id},)
+    .then(()=>{
+     res.send({
+        message : `Sales dengan _id : ${req.params.sales_id} berhasil dihapus`,
+        status : 'Success'
+     });
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}

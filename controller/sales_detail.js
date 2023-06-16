@@ -78,3 +78,17 @@ exports.post_new_sales_detail=(req,res,next)=>{
         return next(err)
     });
     }
+
+//DELETE sales detail by sales_detail_id
+exports.delete_sales_det_by_id=(req,res,next)=>{
+    SalesDetail.findByIdAndDelete({_id : req.params.sales_det_id},)
+    .then(()=>{
+     res.send({
+        message : `Sales detail dengan _id : ${req.params.sales_det_id} berhasil dihapus`,
+        status : 'Success'
+     });
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}
