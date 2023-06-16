@@ -46,8 +46,8 @@ exports.post_new_sales=(req,res,next)=>{
     });
     }
 
-// Middleware untuk calkulasi data yang diupdate pada sales setiap barang ditambah 
-exports.middleware_calculate_update_sales= (req,res,next)=>{
+// Middleware untuk calkulasi data subtotal dan update pada sales
+exports.middleware_calculate_sales_subtotal= (req,res,next)=>{
     SalesDetail.find({sales_id : req.params.sales_id},)
     .then((data)=>{
     // ambil data untuk subtotal
@@ -67,10 +67,25 @@ exports.middleware_calculate_update_sales= (req,res,next)=>{
     })
 }
 
+// Middleware untuk calkulasi data total bayar dan update pada sales
+exports.middleware_calculate_sales_total_bayar=(req,res,next)=>{
+    Sales.find({_id : req.params.sales_id},)
+    .then((data)=>{
+     const salesData= data[0];
+     const totalBayar= res.locals.subtotal + salesData.ongkir - salesData.diskon;
+     res.locals.total_bayar= totalBayar;
+     next()
+    })
+    .catch((err)=>{
+     return next(err)
+    })
+}
+
 // POST update sales
 exports.update_sum_sales_by_id=(req,res,next)=>{
     const updateData={
-        subtotal : res.locals.subtotal, //generated,
+        subtotal : res.locals.subtotal, //generated
+        total_bayar : res.locals.total_bayar
     }
     Sales.findByIdAndUpdate(req.params.sales_id, updateData)
     .then(()=>{
