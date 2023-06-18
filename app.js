@@ -3,7 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-require('dotenv').config()
+require('dotenv').config();
+const cors = require('cors');
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const barangRouter = require('./routes/barang');
@@ -17,6 +19,11 @@ const session = require("express-session");
 const passport = require("passport");
 
 const app = express();
+app.use(cors({
+  origin : 'http://localhost:3000',
+  credentials : true
+}));
+
 
 //connecting MONGO DB
 const mongoose = require("mongoose");
