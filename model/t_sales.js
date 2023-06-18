@@ -9,6 +9,7 @@ const SalesSchema = new Schema({
     cust_id :  { type : Schema.Types.ObjectId, ref : "m_customer" , required: true},
     subtotal :{type: Number, required: true, default : 0},
     diskon :{type: Number, required: true, default : 0},
+    jumlah_barang : {type: Number, required: true, default :0},
     ongkir :{type: Number, required: true, default : 0},
     total_bayar :{type: Number, reqired: true, default : 0}
 })

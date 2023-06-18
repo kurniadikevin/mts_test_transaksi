@@ -4,6 +4,7 @@ const SalesDetail = require('../model/t_sales_det');
 //GET all sales list
 exports.get_all_sales_list = (req, res,next) => {
     Sales.find({},)
+    .populate('cust_id')
     .then((data)=>{
      res.send(data);
     })

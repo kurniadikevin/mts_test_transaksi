@@ -6,7 +6,7 @@ const user_controller= require('../controller/user');
 router.get('/all', user_controller.verifyToken, user_controller.get_user_list)
 
 //POST Create new user for admin
-router.post('/sign-up',user_controller.verifyToken,user_controller.create_new_user)
+router.post('/sign-up',user_controller.create_new_user)
 
 //POST User sign in 
 router.post('/sign-in',user_controller.generateTokenMiddleware,user_controller.user_sign_in)
