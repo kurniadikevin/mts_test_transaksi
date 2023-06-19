@@ -59,6 +59,17 @@ exports.middleware_calculate_sales_subtotal= (req,res,next)=>{
      const sumTotal= salesTotalArr.reduce((total,num)=>{
         return total + num
      })
+
+    // ambil data untuk quantity
+    const salesQtyArr= data.map((item)=>{
+        return item.qty;
+    })
+    //calculasi total jumlah barang
+    const sumQuantity= salesQtyArr.reduce((total,num)=>{
+        return total + num
+    })
+
+     res.locals.jumlah_barang= sumQuantity
      res.locals.subtotal= sumTotal
      next()
      //res.send({total:sumTotal});
@@ -85,14 +96,15 @@ exports.middleware_calculate_sales_total_bayar=(req,res,next)=>{
 // POST update sales
 exports.update_sum_sales_by_id=(req,res,next)=>{
     const updateData={
-        subtotal : res.locals.subtotal, //generated
-        total_bayar : res.locals.total_bayar
+        subtotal : res.locals.subtotal, 
+        total_bayar : res.locals.total_bayar,
+        jumlah_barang : res.locals.jumlah_barang
     }
     Sales.findByIdAndUpdate(req.params.sales_id, updateData)
     .then((data)=>{
      res.send({
         message : `Sales dengan _id : ${req.params.sales_id} berhasil diupdate`,
-        newData : data,
+        newData : updateData,
         status : 'Success'
      });
     })
