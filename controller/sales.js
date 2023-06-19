@@ -26,14 +26,16 @@ exports.get_sales_by_sales_id = (req, res,next) => {
 
 //POST add new sales
 exports.post_new_sales=(req,res,next)=>{
+    
     const item = new Sales({
         kode : req.body.kode,
         tgl : req.body.tgl,
         cust_id : req.body.cust_id,
-        subtotal : res.locals.subtotal, //generated,
+        subtotal : req.body.subtotal, //generated,
         diskon : req.body.diskon,
         ongkir : req.body.ongkir,
-        total_bayar : res.locals.total_bayar// generated
+        jumlah_barang :req.body.jumlah_barang,// generated 
+        total_bayar : req.body.total_bayar// generated
     })
     item.save().then((data)=>{
         res.send({
