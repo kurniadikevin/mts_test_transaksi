@@ -20,7 +20,7 @@ const passport = require("passport");
 
 const app = express();
 app.use(cors({
-  origin : 'http://localhost:3000',
+  origin : ['http://localhost:3000','https://mts-test-transaksi-frontend.vercel.app'],
   credentials : true
 }));
 
