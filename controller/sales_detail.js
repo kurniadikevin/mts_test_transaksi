@@ -61,11 +61,11 @@ exports.post_new_sales_detail=(req,res,next)=>{
     const item = new SalesDetail({
         sales_id : req.body.sales_id,
         barang_id : req.body.barang_id,
-        harga_bandrol : res.locals.harga_bandrol,//generated
+        harga_bandrol : req.body.harga_bandrol,
         qty : req.body.qty,
         diskon_pct : req.body.diskon_pct,
-        diskon_nilai : res.locals.diskon_nilai, //generated
-        total : res.locals.total//generated
+        diskon_nilai : req.body.diskon_nilai, 
+        total : req.body.total
     })
     item.save().then((data)=>{
         res.send({
