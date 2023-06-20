@@ -27,6 +27,8 @@ exports.get_sales_detail_by_id = (req, res,next) => {
 //GET all sales_detail_list by sales_id
 exports.get_sales_detail_by_sales_id = (req, res,next) => {
     SalesDetail.find({sales_id : req.params.sales_id},)
+    .populate('sales_id')
+    .populate('barang_id')
     .then((data)=>{
      res.send(data);
     })
